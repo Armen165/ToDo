@@ -1,5 +1,5 @@
 import React from 'react';
-import ToDo from './components/ToDo/ToDo'
+import ToDo1 from './folder/ToDo1'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -9,7 +9,7 @@ function App() {
  
     return (
         <div>
-            <ToDo/>
+            <ToDo1/>
         </div>
     )
   }
