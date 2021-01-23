@@ -1,130 +1,95 @@
 import React from 'react';
-import idGenerator from './idGenerator';
-import { Card, Button, InputGroup, FormControl, Col, Container, Row } from 'react-bootstrap'
-class ToDo1 extends React.Component {
+import idGenerator from './idGenerator'
+
+class ToDo extends React.Component {
     state = {
         text: '',
         tasks: [],
-        selectedTasks: new Set()
-    }
+        selectedTasks:new Set()
+        
 
+    }
     changeText = (event) => {
         this.setState({
-            text: event.target.value,
+            text: event.target.value
         })
     }
+
     addTask = () => {
         const text = this.state.text.trim();
-
-        if (text === '') {
+        if (!text) {
             return
         }
         const newTask = {
-            title: text,
-            id: idGenerator()
+            id: idGenerator(),
+            title: text
         }
-        let { tasks } = this.state;
-        tasks = [...tasks, newTask]
+        const tasks = [...this.state.tasks, newTask]
         this.setState({
             tasks,
             text: ''
         })
     }
-    deleteTask = (idTask) => {
-        const { tasks } = this.state;
-
-        let filterTask = tasks.filter((fil) => {
-            return idTask !== fil.id
+    deleteTask = (taskId) => {
+        const filterTask = this.state.tasks.filter((f)=>{
+            return f.id!==taskId
         })
+        const {selectedTasks} =this.state;
+        if(selectedTasks.has(taskId)){
+            selectedTasks.delete(taskId)
+        }
         this.setState({
-            tasks: filterTask
+            tasks:filterTask,
+            selectedTasks
         })
     }
-    toggleTask = (taskId) => {
+    toggleTask = (check) => {
         const selectedTasks = new Set(this.state.selectedTasks);
-        if (selectedTasks.has(taskId)) {
-            selectedTasks.delete(taskId)
-        } else {
-            selectedTasks.add(taskId)
+        if( selectedTasks.has(check)){
+            selectedTasks.delete(check)
+        }else{
+            selectedTasks.add(check)
         }
-
         this.setState({
             selectedTasks
         })
     }
-    removeSelected = () => {
-        const { selectedTasks, tasks } = this.state;
-        const newTasks = tasks.filter((task) => {
-            if (selectedTasks.has(task.id)) {
-                return false;
-            }
-            return true;
-        });
 
+    removeSelected = ()=>{
+        const newItem = this.state.tasks.filter((k)=>{
+            if(this.state.selectedTasks.has(k.id)){
+                return false
+            }else{
+                return true
+            }
+        })
         this.setState({
-            tasks: newTasks,
-            selectedTasks: new Set()
+            tasks:newItem,
+            selectedTasks:new Set()
         })
     }
+
     render() {
-        const { tasks, selectedTasks, text } = this.state;
-        const createTask = tasks.map(item => {
-            return (
-                <Col key={item.id}
-                    xl={4}
-                    sm={6}>
+        const list = this.state.tasks.map((item,index) => {
+            return <div key = {index}>
+                <li>{item.title}</li>
+                <button onClick = {()=>{this.deleteTask(item.id)}}>Del</button>
+                <input type = 'checkbox' onChange = {()=>{this.toggleTask(item.id)}}/>
 
-                    <Card >
-                        <Card.Body>
-                            <input type='checkbox'
-                                onChange={() => { this.toggleTask(item.id) }} />
-                            <Card.Title>{item.title}</Card.Title>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                        {item.id}
-                            </Card.Text>
-                            <Button variant="primary" onClick={() => { this.deleteTask(item.id) }}>Delete</Button>
-                        </Card.Body>
-                    </Card>
-                </Col>
-
-            )
+            </div>
         })
         return (
             <div>
-                <Container>
-                    <Row>
-                        <Col>
-                            <InputGroup className="mb-3">
-                                <FormControl
-                                    value={this.state.text} onChange={this.changeText}
-                                    placeholder='Create your task'
-                                />
-                                <InputGroup.Append>
-                                    <Button variant="outline-secondary" onClick={this.addTask}>Button</Button>
-                                </InputGroup.Append>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Button
-                            variant='danger'
-                            disabled={!selectedTasks.size}
-                            onClick={this.removeSelected}>
-                            Delete selected
-                            </Button>
-                    </Row>
-
-                    <Row>
-                        {createTask}
-
-                    </Row>
-
-                </Container>
-
+                <input value={this.state.text} onChange={this.changeText} />
+                <button onClick={this.addTask}>Add</button>
+                <ol>
+                    {list}
+                </ol>
+                <button onClick = {this.removeSelected}>Delete selected</button>
             </div>
         )
     }
+
+
 }
-export default ToDo1;
+export default ToDo;
