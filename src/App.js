@@ -1,15 +1,20 @@
 import React from 'react';
-import ToDo1 from './folder/ToDo1'
+import ToDo from './components/ToDo/ToDo1';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
+// import A from './A'
+
+
+
 function App() {
-   
+    
  
     return (
         <div>
-            <ToDo1/>
+            <ToDo/>
+            
         </div>
     )
   }
